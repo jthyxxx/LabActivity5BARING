@@ -30,33 +30,6 @@ public class FoodOrderGUI extends  JFrame{
 
     private JButton btnOrder;
 
-    public static void main(String[] args) {
-        FoodOrderGUI foodorder = new FoodOrderGUI();
-        foodorder.setTitle("Food Ordering System");
-        foodorder.setContentPane(foodorder.panel1);
-        foodorder.setSize(850, 500);
-        foodorder.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        foodorder.setVisible(true);
-        foodorder.setLocationRelativeTo(null);
-    }
-
-    public void checkOut() {
-        double total = 0;
-        for(JCheckBox item : items) {
-            if(item.isSelected()) {
-                total+=Double.parseDouble(item.getActionCommand());
-            }
-        }
-        total = total-(total*Double.parseDouble(discounts.getSelection().getActionCommand()));
-        JOptionPane.showMessageDialog(panel1,String.format("The total price is Php %.2f", total));
-    }
-
-    public static class OrderEmptyException extends Exception {
-        public OrderEmptyException(String message) {
-            super(message);
-        }
-    }
-
     ButtonGroup discounts;
 
     List<JCheckBox> items;
@@ -93,6 +66,46 @@ public class FoodOrderGUI extends  JFrame{
         });
     }
 
+    public static void main(String[] args) {
+        FoodOrderGUI foodorder = new FoodOrderGUI();
+        foodorder.setTitle("Food Ordering System");
+        foodorder.setContentPane(foodorder.panel1);
+        foodorder.setSize(850, 500);
+        foodorder.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        foodorder.setVisible(true);
+        foodorder.setLocationRelativeTo(null);
+    }
+
+    public void checkOut() {
+        try {
+            double total = 0;
+            boolean isEmpty = true;
+            for(JCheckBox item : items) {
+                if(item.isSelected()) {
+                    total+=Double.parseDouble(item.getActionCommand());
+                    isEmpty = false;
+                }
+            }
+            if(isEmpty && discounts.getSelection() == null) {
+                throw (new OrderDiscountEmptyException("Order and Discount cannot be empty"));
+            } else if(isEmpty) {
+                throw (new OrderEmptyException("Order cannot be empty"));
+            } else  if(discounts.getSelection() == null) {
+                throw (new DiscountEmptyException("Discount cannot be empty"));
+            } else {
+                total = total-(total*Double.parseDouble(discounts.getSelection().getActionCommand()));
+                JOptionPane.showMessageDialog(panel1,String.format("The total price is Php %.2f", total));
+            }
+        } catch (OrderEmptyException | DiscountEmptyException | OrderDiscountEmptyException e) {
+            JOptionPane.showMessageDialog(panel1,e.getMessage());
+        }
+    }
+
+    public static class OrderEmptyException extends Exception {
+        public OrderEmptyException(String message) {
+            super(message);
+        }
+    }
     public static class DiscountEmptyException extends  Exception {
         public DiscountEmptyException(String message) {
             super(message);
