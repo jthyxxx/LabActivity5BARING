@@ -22,9 +22,25 @@ public class SimpleCalcGUI extends JFrame{
         btnCompute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                int numOne = Integer.parseInt(tfNumber1.getText());
-                int numTwo = Integer.parseInt(tfNumber2.getText());
-                compute(numOne,numTwo);
+                try {
+                    if(tfNumber1.getText().equalsIgnoreCase("") || tfNumber2.getText().equalsIgnoreCase("")) {
+                        throw (new EmptyInput("Input field should not be left empty."));
+                    } else {
+                        int numOne = Integer.parseInt(tfNumber1.getText());
+                        int numTwo = Integer.parseInt(tfNumber2.getText());
+                        compute(numOne,numTwo);
+
+                    }
+                } catch (ArithmeticException | NumberFormatException | EmptyInput e) {
+                    String output = "You cannot divide a number by zero.";
+                    if(e instanceof EmptyInput) {
+                        output = ((EmptyInput) e).getMessage();
+                    } else if(e instanceof NumberFormatException) {
+                        output = "Enter only a number.";
+                    }
+                    JOptionPane.showMessageDialog(panel1,output);
+                    lblResult.setText("");
+                }
             }
         });
     }
