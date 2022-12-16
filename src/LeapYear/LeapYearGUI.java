@@ -13,8 +13,12 @@ public class LeapYearGUI extends JFrame{
         btnCheckYear.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                int year = Integer.parseInt(tfYear.getText());
-                checkYear(year);
+                try {
+                    int year = Integer.parseInt(tfYear.getText());
+                    checkYear(year);
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(panel1, "Enter only a number.");
+                }
             }
         });
     }
